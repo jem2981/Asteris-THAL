@@ -1,0 +1,17 @@
+{
+  "name": "asteris-thal-continuity-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "demo": "tsx src/demo/solaceProjectHeliosDemo.ts",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "tsx": "^4.19.4",
+    "typescript": "^5.4.5",
+    "vitest": "^4.1.7"
+  }
+}
