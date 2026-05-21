@@ -409,7 +409,7 @@ writeFileSync(
       <span class="badge pass">No LLM/API calls</span>
       <br>
       <a class="handoff-link" href="/deliverables/ray">Ray + Asteris Deliverables</a>
-      <p class="muted">Click the deliverables button, then enter this key: <strong>Ray-Asteris-Handoff-052126</strong></p>
+      <p class="muted">Click the deliverables button, then enter the access code shared separately.</p>
     </header>
 
     <section>
