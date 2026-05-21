@@ -1,6 +1,20 @@
 Ray + Asteris Deliverables
-Version: Prototype handoff v0.1
+Version: Prototype handoff v0.2
 Date: May 21, 2026
 
-These are placeholder release notes for the private prototype handoff page.
-Replace this file when the final deliverables are ready.
+Files included on the private handoff page:
+
+1. Setup Guide
+   Short guide for opening the ATCB review dashboard and release package.
+
+2. System Package
+   Complete ATCB v0.2 review packet ZIP generated from the local release folder.
+
+3. Release Notes
+   This plain-language summary.
+
+Live page:
+https://asteris-thal-continuity-bridge.vercel.app/deliverables/ray
+
+Boundary reminder:
+This is a private prototype handoff page. Do not redistribute without permission.

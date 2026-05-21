@@ -22,15 +22,18 @@ export default function handler(request, response) {
     files: [
       {
         label: "Setup Guide",
-        href: "/deliverables/ray/Ray-Asteris-Setup-Guide.pdf"
+        href: "/deliverables/ray/Ray-Asteris-Setup-Guide.pdf",
+        description: "Short guide for opening the review page and release package."
       },
       {
         label: "System Package",
-        href: "/deliverables/ray/Ray-Asteris-System-Package.zip"
+        href: "/deliverables/ray/Ray-Asteris-System-Package.zip",
+        description: "Complete ATCB v0.2 review packet ZIP."
       },
       {
         label: "Release Notes",
-        href: "/deliverables/ray/Release-Notes.txt"
+        href: "/deliverables/ray/Release-Notes.txt",
+        description: "Plain-language notes for this handoff."
       }
     ]
   });

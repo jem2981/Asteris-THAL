@@ -99,9 +99,53 @@
     }
     button:disabled { cursor: wait; opacity: 0.72; }
     .downloads {
-      display: grid;
-      gap: 10px;
       margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #0c1015;
+      padding: 14px;
+    }
+    .downloads h2 {
+      margin: 0 0 4px;
+      font-size: 20px;
+    }
+    .downloads p {
+      margin-bottom: 12px;
+    }
+    .download-option {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 10px;
+      background: var(--panel);
+    }
+    .download-option input {
+      width: 20px;
+      min-height: 20px;
+      accent-color: var(--accent);
+    }
+    .download-option strong {
+      display: block;
+      color: var(--text);
+    }
+    .download-option span {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .download-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .secondary {
+      background: transparent;
+      color: var(--muted);
     }
     .message {
       min-height: 24px;
@@ -160,15 +204,70 @@
           throw new Error(payload.message || "Access was not approved.");
         }
 
-        for (const file of payload.files) {
+        const heading = document.createElement("h2");
+        heading.textContent = "Choose files to download";
+        const intro = document.createElement("p");
+        intro.textContent = "Select one or more files, then download them when ready.";
+        downloads.append(heading, intro);
+
+        for (const [index, file] of payload.files.entries()) {
+          const row = document.createElement("label");
+          row.className = "download-option";
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = true;
+          checkbox.dataset.href = file.href;
+          checkbox.dataset.label = file.label;
+          const text = document.createElement("span");
+          const title = document.createElement("strong");
+          title.textContent = file.label;
+          const description = document.createElement("span");
+          description.textContent = file.description || "Download file.";
           const link = document.createElement("a");
           link.className = "download";
           link.href = file.href;
-          link.textContent = file.label;
+          link.textContent = "Download";
           link.setAttribute("download", "");
-          downloads.append(link);
+          text.append(title, description);
+          row.append(checkbox, text, link);
+          downloads.append(row);
         }
 
+        const actions = document.createElement("div");
+        actions.className = "download-actions";
+        const downloadSelected = document.createElement("button");
+        downloadSelected.type = "button";
+        downloadSelected.textContent = "Download selected";
+        downloadSelected.addEventListener("click", () => {
+          const selected = downloads.querySelectorAll("input[type='checkbox']:checked");
+          if (selected.length === 0) {
+            message.className = "message error";
+            message.textContent = "Choose at least one file first.";
+            return;
+          }
+          for (const item of selected) {
+            const temporaryLink = document.createElement("a");
+            temporaryLink.href = item.dataset.href;
+            temporaryLink.download = "";
+            temporaryLink.rel = "noopener";
+            document.body.append(temporaryLink);
+            temporaryLink.click();
+            temporaryLink.remove();
+          }
+          message.className = "message";
+          message.textContent = "Download started.";
+        });
+        const clearSelection = document.createElement("button");
+        clearSelection.type = "button";
+        clearSelection.className = "secondary";
+        clearSelection.textContent = "Clear selection";
+        clearSelection.addEventListener("click", () => {
+          downloads.querySelectorAll("input[type='checkbox']").forEach((item) => {
+            item.checked = false;
+          });
+        });
+        actions.append(downloadSelected, clearSelection);
+        downloads.append(actions);
         downloads.classList.remove("hidden");
         message.textContent = "Downloads unlocked.";
       } catch (error) {

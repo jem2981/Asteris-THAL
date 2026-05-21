@@ -9,17 +9,32 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
 endobj
 4 0 obj
-<< /Length 155 >>
+<< /Length 556 >>
 stream
 BT
 /F1 16 Tf
 72 720 Td
 (Ray + Asteris Setup Guide) Tj
-0 -28 Td
+0 -24 Td
+(Prototype handoff v0.2 - May 21, 2026) Tj
 /F1 11 Tf
-(Placeholder PDF for the private prototype handoff.) Tj
-0 -18 Td
-(Replace this file when the final deliverable is ready.) Tj
+0 -24 Td
+() Tj
+0 -24 Td
+(1. Open the private deliverables page.) Tj
+0 -24 Td
+(2. Enter the access code shared by Jason/Nova.) Tj
+0 -24 Td
+(3. Select Setup Guide, System Package, or Release Notes.) Tj
+0 -24 Td
+(4. Use Download selected, or download a single file.) Tj
+0 -24 Td
+(5. Review materials for conceptual alignment and boundary accuracy.) Tj
+/F1 11 Tf
+0 -24 Td
+() Tj
+0 -24 Td
+(Boundary: do not redistribute without permission.) Tj
 ET
 endstream
 endobj
@@ -33,9 +48,9 @@ xref
 0000000058 00000 n 
 0000000115 00000 n 
 0000000241 00000 n 
-0000000447 00000 n 
+0000000848 00000 n 
 trailer
 << /Root 1 0 R /Size 6 >>
 startxref
-517
+918
 %%EOF
