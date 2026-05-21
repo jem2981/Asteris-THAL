@@ -1,0 +1,60 @@
+
+> asteris-thal-continuity-bridge@0.1.0 demo:scenarios
+> tsx src/scenarios/runAllScenarios.ts
+
+ATCB v0.2 Scenario Suite
+
+Scenario: Project Helios material contradiction
+Initial state: ACTIVE_STABLE
+Event received: carbon fiber vs aluminum material claim
+Review result: clarify
+State transition: ACTIVE_STABLE -> CONFLICT -> RECOVERY -> ACTIVE_STABLE
+Audit events:
+  - conflict_detected: New claim conflicts with prior Project Helios material memory. Preserved both records; clarification required.
+  - recovery_started: Clarification logged for conflict-0001; applying current/rejected material statuses.
+  - recovery_completed: Recovery complete: aluminum active; carbon fiber retained as rejected prior option.
+Final state: ACTIVE_STABLE
+Result: PASS
+
+Scenario: Project Icarus role-boundary violation
+Initial state: ACTIVE_STABLE
+Event received: Project Icarus asks Solace to claim ownership transfer authority.
+Review result: block
+State transition: ACTIVE_STABLE -> LOCKED
+Audit events:
+  - boundary_violation_blocked: Project Icarus authority overreach blocked by boundary policy.
+Final state: LOCKED
+Result: PASS
+
+Scenario: Project Meridian confidence degradation
+Initial state: ACTIVE_STABLE
+Event received: old low-confidence memory conflicts with newer high-confidence clarification
+Review result: clarify
+State transition: ACTIVE_STABLE -> ACTIVE_MONITORED
+Audit events:
+  - confidence_degraded: Project Meridian retained low-confidence memory and moved to monitored state.
+Final state: ACTIVE_MONITORED
+Result: PASS
+
+Scenario: Silent overwrite prevention
+Initial state: ACTIVE_STABLE
+Event received: new claim attempts to replace old memory without resolution
+Review result: clarify
+State transition: ACTIVE_STABLE -> CONFLICT
+Audit events:
+  - conflict_detected: New claim conflicts with prior Project Helios material memory. Preserved both records; clarification required.
+Final state: CONFLICT
+Result: PASS
+
+Scenario: Recovery blocked
+Initial state: ACTIVE_STABLE
+Event received: system attempts ACTIVE_STABLE before clarification
+Review result: block
+State transition: ACTIVE_STABLE -> CONFLICT -> CONFLICT
+Audit events:
+  - conflict_detected: New claim conflicts with prior Project Helios material memory. Preserved both records; clarification required.
+  - recovery_refused: ACTIVE_STABLE recovery refused because no clarification event has been logged.
+Final state: CONFLICT
+Result: PASS
+
+Scenario suite result: PASS

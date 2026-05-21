@@ -81,3 +81,49 @@ export interface ClarificationEvent {
   userClarification: string;
   createdAt: string;
 }
+
+export type ChangeDecision =
+  | "accepted"
+  | "accepted_with_modification"
+  | "rejected"
+  | "deferred"
+  | "out_of_scope"
+  | "requires_ownership_clarification";
+
+export interface ReviewFeedbackItem {
+  id: string;
+  reviewer: string;
+  category:
+    | "terminology"
+    | "governance"
+    | "boundary"
+    | "continuity"
+    | "failure_recovery"
+    | "ownership"
+    | "sentience_wording"
+    | "technical";
+  summary: string;
+  decision: ChangeDecision;
+  rationale: string;
+  createdAt: string;
+}
+
+export interface ReviewerFinding {
+  reviewerId: string;
+  approved: boolean;
+  severity: "info" | "low" | "medium" | "high" | "blocking";
+  summary: string;
+  recommendedAction: string;
+}
+
+export interface ChoirReviewResult {
+  approved: boolean;
+  blockingFindings: ReviewerFinding[];
+  findings: ReviewerFinding[];
+  finalRecommendation:
+    | "allow"
+    | "clarify"
+    | "recover"
+    | "block"
+    | "escalate_to_human_review";
+}

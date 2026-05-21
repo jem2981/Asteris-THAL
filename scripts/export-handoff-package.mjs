@@ -16,6 +16,7 @@ const stagingDir = join(handoffDir, ".packet-staging");
 const stagingDemoDir = join(stagingDir, "demo-output");
 const outputDir = join(root, "demo-output");
 const reviewPage = join(root, "review", "atcb-v0.1-review.html");
+const dashboardPage = join(root, "review", "atcb-v0.2-dashboard.html");
 
 const reviewCommit = "0f5658b";
 const reviewTag = "atcb-v0.1-review";
@@ -27,7 +28,8 @@ const packetFiles = [
   "atcb-v0.1-test-output.txt",
   "atcb-v0.1-review-notes-template.md",
   "atcb-v0.1-acceptance-matrix.md",
-  "atcb-v0.1-review-index.md"
+  "atcb-v0.1-review-index.md",
+  "atcb-v0.2-scenario-output.txt"
 ];
 
 mkdirSync(handoffDir, { recursive: true });
@@ -117,6 +119,7 @@ Ray/Asteris are reviewing only:
 - acceptance matrix
 - review notes template
 - read-only review HTML page
+- read-only v0.2 dashboard
 
 ## Review Instructions
 Please review the packet for conceptual alignment and boundary accuracy only. Do not treat this as repo access, code authority, corpus exchange, or system merger.
@@ -195,6 +198,10 @@ function createZip() {
     join(handoffDir, "ATCB-v0.1-review-page.html"),
     join(stagingDir, "ATCB-v0.1-review-page.html")
   );
+  copyFileSync(
+    join(handoffDir, "ATCB-v0.2-dashboard.html"),
+    join(stagingDir, "ATCB-v0.2-dashboard.html")
+  );
 
   for (const fileName of packetFiles) {
     const sourcePath = join(outputDir, fileName);
@@ -235,15 +242,18 @@ function createZip() {
 
 runNodeScript(join(root, "scripts", "export-review-packet.mjs"));
 requireFile(reviewPage);
+requireFile(dashboardPage);
 
 const markdown = createHandoffMarkdown();
 const markdownPath = join(handoffDir, "ATCB-v0.1-review-handoff.md");
 const textPath = join(handoffDir, "ATCB-v0.1-review-handoff.txt");
 const htmlPath = join(handoffDir, "ATCB-v0.1-review-page.html");
+const dashboardPath = join(handoffDir, "ATCB-v0.2-dashboard.html");
 
 writeFileSync(markdownPath, markdown, "utf8");
 writeFileSync(textPath, markdownToPlainText(markdown), "utf8");
 copyFileSync(reviewPage, htmlPath);
+copyFileSync(dashboardPage, dashboardPath);
 
 const zipPath = createZip();
 
@@ -251,4 +261,5 @@ console.log("ATCB v0.1 handoff package refreshed:");
 console.log(markdownPath);
 console.log(textPath);
 console.log(htmlPath);
+console.log(dashboardPath);
 console.log(zipPath);

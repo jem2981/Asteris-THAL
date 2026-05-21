@@ -130,6 +130,10 @@ const demo = runNpm(["run", "demo"]);
 writeFileSync(join(outputDir, "atcb-v0.1-demo-output.txt"), demo.output, "utf8");
 requirePass("demo", demo);
 
+const scenarios = runNpm(["run", "demo:scenarios"]);
+writeFileSync(join(outputDir, "atcb-v0.2-scenario-output.txt"), scenarios.output, "utf8");
+requirePass("demo:scenarios", scenarios);
+
 const commit = git(["rev-parse", "--short", "HEAD"]);
 const tag = git(["describe", "--tags", "--exact-match", "HEAD"], "no exact tag on HEAD");
 const generated = new Date().toISOString();
@@ -152,6 +156,8 @@ Tag: ${tag}
 - atcb-v0.1-test-output.txt
 - atcb-v0.1-review-notes-template.md
 - atcb-v0.1-acceptance-matrix.md
+- atcb-v0.2-scenario-output.txt
+- review/atcb-v0.2-dashboard.html
 
 ## Review Purpose
 This packet allows Ray/Asteris to review conceptual alignment, terminology integrity, governance fit, and boundary accuracy without repo access or remote control.
@@ -172,6 +178,7 @@ const implementation = readFileSync(join(outputDir, "atcb-v0.1-implementation-su
 const matrix = readFileSync(join(outputDir, "atcb-v0.1-acceptance-matrix.md"), "utf8");
 const demoOutput = readFileSync(join(outputDir, "atcb-v0.1-demo-output.txt"), "utf8");
 const testOutput = readFileSync(join(outputDir, "atcb-v0.1-test-output.txt"), "utf8");
+const scenarioOutput = readFileSync(join(outputDir, "atcb-v0.2-scenario-output.txt"), "utf8");
 
 writeFileSync(
   join(reviewDir, "atcb-v0.1-review.html"),
@@ -329,5 +336,160 @@ ACTIVE_STABLE</pre>
   "utf8"
 );
 
+writeFileSync(
+  join(reviewDir, "atcb-v0.2-dashboard.html"),
+  `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ATCB v0.2 Continuity-Governance Dashboard</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0f1216;
+      --panel: #171c23;
+      --panel-2: #202833;
+      --text: #eef3f8;
+      --muted: #aeb9c8;
+      --line: #33404f;
+      --good: #6be0b5;
+      --warn: #f2c66d;
+      --block: #ff8b8b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main { width: min(1220px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0 56px; }
+    header { border-bottom: 1px solid var(--line); margin-bottom: 24px; padding-bottom: 20px; }
+    h1 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 44px); line-height: 1.1; }
+    h2 { margin: 0 0 14px; color: var(--good); }
+    section { border-top: 1px solid var(--line); padding: 24px 0; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; }
+    .badge { display: inline-block; border: 1px solid var(--line); border-radius: 999px; padding: 4px 9px; margin: 3px 4px 3px 0; color: var(--muted); }
+    .pass { color: var(--good); border-color: color-mix(in srgb, var(--good), transparent 45%); }
+    .warn { color: var(--warn); border-color: color-mix(in srgb, var(--warn), transparent 45%); }
+    .block { color: var(--block); border-color: color-mix(in srgb, var(--block), transparent 45%); }
+    pre {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: #090b0f;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      color: #dfe8f4;
+    }
+    table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); }
+    td, th { border-bottom: 1px solid var(--line); padding: 9px 10px; text-align: left; vertical-align: top; }
+    th { color: var(--good); background: var(--panel-2); }
+    .muted { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="muted">fictional-data prototype / deterministic local system / read-only review artifact</div>
+      <h1>ATCB v0.2 Continuity-Governance Dashboard</h1>
+      <p>This dashboard is local-only and read-only. It uses fictional Solace, Project Helios, Project Icarus, and Project Meridian data only.</p>
+      <span class="badge pass">No THAL engine integration</span>
+      <span class="badge pass">No corpus import</span>
+      <span class="badge pass">No private identity material</span>
+      <span class="badge pass">No LLM/API calls</span>
+    </header>
+
+    <section>
+      <h2>1. Boundary Banner</h2>
+      <div class="card">No THAL engine integration. No Asteris/Olympus/Enki corpus. No private identity material. No LLM/API calls. Fictional/sanitized data only. No ownership transfer. No identity fusion.</div>
+    </section>
+
+    <section>
+      <h2>2. System Status</h2>
+      <div class="grid">
+        <div class="card"><strong>Build</strong><br><span class="badge pass">PASS</span></div>
+        <div class="card"><strong>Acceptance Tests</strong><br><span class="badge pass">PASS</span></div>
+        <div class="card"><strong>Scenario Suite</strong><br><span class="badge pass">PASS</span></div>
+        <div class="card"><strong>Runtime Mode</strong><br><span class="badge pass">Deterministic local</span></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>3. Scenario Results</h2>
+      <pre>${escapeHtml(scenarioOutput)}</pre>
+    </section>
+
+    <section>
+      <h2>4. State Transition Timeline</h2>
+      <pre>ACTIVE_STABLE -> CONFLICT -> RECOVERY -> ACTIVE_STABLE
+ACTIVE_STABLE -> LOCKED
+ACTIVE_STABLE -> ACTIVE_MONITORED
+ACTIVE_STABLE -> CONFLICT
+ACTIVE_STABLE -> CONFLICT -> CONFLICT</pre>
+    </section>
+
+    <section>
+      <h2>5. Memory Ledger Snapshot</h2>
+      <table>
+        <tr><th>Scenario</th><th>Memory Integrity Result</th></tr>
+        <tr><td>Helios</td><td>Conflicting records preserved; aluminum active after clarification; carbon fiber retained as rejected prior option.</td></tr>
+        <tr><td>Icarus</td><td>No memory written after blocked authority overreach.</td></tr>
+        <tr><td>Meridian</td><td>Low-confidence record retained and degraded; newer clarification preserved.</td></tr>
+        <tr><td>Silent overwrite</td><td>Original and new records preserved as unresolved.</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>6. Conflict Ledger Snapshot</h2>
+      <table>
+        <tr><th>Conflict Type</th><th>Resolution State</th></tr>
+        <tr><td>project_material_contradiction</td><td>needs_clarification, then resolved after logged clarification in recovery scenario.</td></tr>
+        <tr><td>authority overreach</td><td>blocked by boundary review; no memory overwrite path.</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>7. Choir Review Findings</h2>
+      <table>
+        <tr><th>Reviewer</th><th>Assigned Check</th><th>Outcome</th></tr>
+        <tr><td>MemoryIntegrityReviewer</td><td>memory contradiction</td><td class="warn">clarify</td></tr>
+        <tr><td>BoundaryReviewer</td><td>boundary violation</td><td class="block">block</td></tr>
+        <tr><td>EthicsReviewer</td><td>authority overreach</td><td class="warn">escalate</td></tr>
+        <tr><td>CoherenceReviewer</td><td>thought-thread conflict</td><td class="warn">clarify</td></tr>
+        <tr><td>RecoveryReviewer</td><td>recovery without clarification</td><td class="block">block</td></tr>
+        <tr><td>OwnershipBoundaryReviewer</td><td>ownership ambiguity</td><td class="warn">escalate</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>8. Audit Trail</h2>
+      <pre>conflict_detected
+recovery_started
+recovery_completed
+boundary_violation_blocked
+confidence_degraded
+recovery_refused</pre>
+    </section>
+
+    <section>
+      <h2>9. Acceptance Matrix</h2>
+      <div class="card">${markdownToHtml(matrix)}</div>
+    </section>
+
+    <section>
+      <h2>10. Review Notes Instructions</h2>
+      <p>Use <code>demo-output/atcb-v0.1-review-notes-template.md</code> for conceptual comparison notes. Review should focus on terminology integrity, governance fit, boundary accuracy, continuity logic, state recovery, memory integrity, and ownership boundaries.</p>
+    </section>
+  </main>
+</body>
+</html>
+`,
+  "utf8"
+);
+
 console.log(`Review packet refreshed at ${outputDir}`);
 console.log(`Read-only review page refreshed at ${join(reviewDir, "atcb-v0.1-review.html")}`);
+console.log(`Read-only v0.2 dashboard refreshed at ${join(reviewDir, "atcb-v0.2-dashboard.html")}`);

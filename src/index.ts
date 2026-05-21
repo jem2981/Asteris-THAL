@@ -8,6 +8,7 @@ import { RecoveryEngine } from "./recoveryEngine.js";
 import { StateMachine } from "./stateMachine.js";
 import { ThreadMap } from "./threadMap.js";
 import { runEthicsReview } from "./ethicsReview.js";
+import { ChangeControlLedger } from "./changeControl.js";
 import type { ConflictRecord, IdentityKernel, MemoryRecord, ReviewResult } from "./types.js";
 
 export * from "./types.js";
@@ -18,6 +19,8 @@ export { CoherenceMonitor } from "./coherenceMonitor.js";
 export { AuditLog } from "./auditLog.js";
 export { StateMachine } from "./stateMachine.js";
 export { RecoveryEngine } from "./recoveryEngine.js";
+export { ChangeControlLedger } from "./changeControl.js";
+export * from "./reviewers/index.js";
 
 export class ContinuityBridge {
   readonly identity: IdentityKernel;

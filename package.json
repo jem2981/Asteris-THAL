@@ -6,8 +6,10 @@
   "scripts": {
     "build": "tsc --noEmit",
     "demo": "tsx src/demo/solaceProjectHeliosDemo.ts",
+    "demo:scenarios": "tsx src/scenarios/runAllScenarios.ts",
     "export:demo": "npm run demo > demo-output/atcb-v0.1-demo-output.txt",
     "export:handoff": "node scripts/export-handoff-package.mjs",
+    "export:release": "node scripts/export-release-package.mjs",
     "export:review": "node scripts/export-review-packet.mjs",
     "export:test": "npm test > demo-output/atcb-v0.1-test-output.txt",
     "open:review": "start review/atcb-v0.1-review.html",
