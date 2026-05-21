@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc --noEmit",
+    "build:site": "node scripts/build-site.mjs",
     "demo": "tsx src/demo/solaceProjectHeliosDemo.ts",
     "demo:scenarios": "tsx src/scenarios/runAllScenarios.ts",
     "export:demo": "npm run demo > demo-output/atcb-v0.1-demo-output.txt",
