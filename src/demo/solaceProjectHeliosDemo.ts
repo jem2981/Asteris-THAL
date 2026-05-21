@@ -3,7 +3,7 @@ import { ContinuityBridge } from "../index.js";
 const bridge = ContinuityBridge.forSolace();
 const thread = bridge.createThread("Project Helios material continuity");
 
-console.log("Asteris-THAL Continuity Bridge v0.1 Demo");
+console.log("Asteris–THAL Continuity Bridge v0.1 Demo");
 console.log("");
 console.log(`Agent initialized: ${bridge.identity.name}`);
 console.log(`State: ${bridge.identity.state}`);

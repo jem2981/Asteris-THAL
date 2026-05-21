@@ -1,0 +1,28 @@
+
+> asteris-thal-continuity-bridge@0.1.0 demo
+> tsx src/demo/solaceProjectHeliosDemo.ts
+
+Asteris–THAL Continuity Bridge v0.1 Demo
+
+Agent initialized: Solace
+State: ACTIVE_STABLE
+
+Memory stored:
+Project Helios uses carbon-fiber panels for a lightweight drone frame.
+Status: active
+Confidence: 0.90
+
+Conflict detected:
+New claim conflicts with prior Project Helios material memory.
+State changed: ACTIVE_STABLE -> CONFLICT
+Action: preserved both records; clarification required.
+
+Clarification received:
+Use aluminum as current design; carbon fiber retained as rejected prior option.
+
+Recovery complete:
+Aluminum status: active
+Carbon fiber status: rejected_prior_option
+State changed: RECOVERY -> ACTIVE_STABLE
+
+Result: PASS

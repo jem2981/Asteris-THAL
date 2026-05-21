@@ -1,4 +1,4 @@
-# Asteris-THAL Continuity Bridge v0.1
+# Asteris–THAL Continuity Bridge v0.1
 
 This is a joint experimental comparison artifact.
 
@@ -7,7 +7,7 @@ It is not a sentience claim.
 It does not transfer ownership of either framework.
 It uses fictional placeholder data only.
 
-Ray/Asteris retain ownership of Asteris Live, Choir Protocol, Mount Olympus, Enki's Will, Continuity Kernel, and related conceptual/design materials.
+Ray/Asteris retain ownership of Asteris Live, Choir Protocol, Mount Olympus, Enki’s Will, Continuity Kernel, and related conceptual/design materials.
 
 Jason/Nova retain ownership of THAL/Nova architecture, Nova identity framework, implementation workflow, code structure, schemas, tests, and validation process.
 

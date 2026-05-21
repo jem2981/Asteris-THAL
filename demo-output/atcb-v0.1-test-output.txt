@@ -1,0 +1,13 @@
+
+> asteris-thal-continuity-bridge@0.1.0 test
+> vitest run
+
+
+ RUN  v4.1.7 C:/Users/jmcdo/Dev/Asteris-THAL
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  19:24:16
+   Duration  160ms (transform 50ms, setup 0ms, import 64ms, tests 4ms, environment 0ms)
+
