@@ -12,7 +12,13 @@ mkdirSync(reviewDir, { recursive: true });
 
 function git(args, fallback = "unavailable") {
   try {
-    return execFileSync("git", args, { cwd: root, encoding: "utf8" }).trim() || fallback;
+    return (
+      execFileSync("git", args, {
+        cwd: root,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "ignore"]
+      }).trim() || fallback
+    );
   } catch {
     return fallback;
   }

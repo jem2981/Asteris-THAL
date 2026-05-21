@@ -1,0 +1,6 @@
+Ray + Asteris Deliverables
+Version: Prototype handoff v0.1
+Date: May 21, 2026
+
+These are placeholder release notes for the private prototype handoff page.
+Replace this file when the final deliverables are ready.

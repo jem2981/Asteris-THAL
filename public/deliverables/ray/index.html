@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ray + Asteris Deliverables</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101317;
+      --panel: #181e26;
+      --panel-2: #202833;
+      --text: #f1f5f9;
+      --muted: #aeb8c6;
+      --line: #33404f;
+      --accent: #75d6b1;
+      --accent-dark: #17392f;
+      --danger: #ff9b9b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+    main {
+      width: min(680px, 100%);
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 24px;
+      box-shadow: 0 20px 70px rgba(0, 0, 0, 0.28);
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 8vw, 44px);
+      line-height: 1.08;
+    }
+    p { margin: 0 0 16px; color: var(--muted); }
+    .notice {
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      border-radius: 8px;
+      padding: 12px;
+      color: var(--text);
+    }
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+      margin: 18px 0;
+    }
+    .meta div {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      color: var(--muted);
+    }
+    .meta strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    form {
+      display: grid;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    label { color: var(--text); font-weight: 650; }
+    input {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #0c1015;
+      color: var(--text);
+      padding: 0 12px;
+      font: inherit;
+    }
+    button, .download {
+      min-height: 48px;
+      border: 1px solid color-mix(in srgb, var(--accent), transparent 45%);
+      border-radius: 8px;
+      background: var(--accent-dark);
+      color: var(--text);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 14px;
+    }
+    button:disabled { cursor: wait; opacity: 0.72; }
+    .downloads {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .message {
+      min-height: 24px;
+      margin-top: 10px;
+      color: var(--muted);
+    }
+    .message.error { color: var(--danger); }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Ray + Asteris Deliverables</h1>
+    <p class="notice">Private prototype handoff page. Do not redistribute without permission.</p>
+    <p>Enter the access code to view the current download links.</p>
+
+    <section class="meta" aria-label="Version and date">
+      <div><strong>Version</strong>Prototype handoff v0.1</div>
+      <div><strong>Date</strong>May 21, 2026</div>
+    </section>
+
+    <form id="access-form">
+      <label for="access-code">Access code</label>
+      <input id="access-code" name="access-code" type="password" autocomplete="current-password" required>
+      <button id="submit-button" type="submit">Unlock downloads</button>
+    </form>
+
+    <p id="message" class="message" role="status" aria-live="polite"></p>
+    <section id="downloads" class="downloads hidden" aria-label="Downloads"></section>
+  </main>
+
+  <script>
+    const form = document.querySelector("#access-form");
+    const codeInput = document.querySelector("#access-code");
+    const button = document.querySelector("#submit-button");
+    const message = document.querySelector("#message");
+    const downloads = document.querySelector("#downloads");
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      button.disabled = true;
+      message.className = "message";
+      message.textContent = "Checking access code...";
+      downloads.classList.add("hidden");
+      downloads.replaceChildren();
+
+      try {
+        const result = await fetch("/api/deliverables-ray-access", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ accessCode: codeInput.value })
+        });
+        const payload = await result.json();
+
+        if (!result.ok || !payload.ok) {
+          throw new Error(payload.message || "Access was not approved.");
+        }
+
+        for (const file of payload.files) {
+          const link = document.createElement("a");
+          link.className = "download";
+          link.href = file.href;
+          link.textContent = file.label;
+          link.setAttribute("download", "");
+          downloads.append(link);
+        }
+
+        downloads.classList.remove("hidden");
+        message.textContent = "Downloads unlocked.";
+      } catch (error) {
+        message.className = "message error";
+        message.textContent = error.message || "Access was not approved.";
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

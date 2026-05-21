@@ -1,4 +1,4 @@
-import { copyFileSync, mkdirSync } from "node:fs";
+import { cpSync, copyFileSync, mkdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { dirname } from "node:path";
@@ -34,5 +34,6 @@ mkdirSync(siteDir, { recursive: true });
 copyFileSync(join(root, "review", "atcb-v0.2-dashboard.html"), join(siteDir, "index.html"));
 copyFileSync(join(root, "review", "atcb-v0.2-dashboard.html"), join(siteDir, "atcb-v0.2-dashboard.html"));
 copyFileSync(join(root, "review", "atcb-v0.1-review.html"), join(siteDir, "atcb-v0.1-review.html"));
+cpSync(join(root, "public"), siteDir, { recursive: true });
 
 console.log(`Static site refreshed at ${siteDir}`);
