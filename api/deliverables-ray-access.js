@@ -1,3 +1,12 @@
+function normalizeAccessCode(value) {
+  return value
+    .normalize("NFKC")
+    .replace(/[\u2010-\u2015\u2212]/g, "-")
+    .replace(/[\u200B-\u200D\uFEFF]/g, "")
+    .trim()
+    .toLowerCase();
+}
+
 export default function handler(request, response) {
   if (request.method !== "POST") {
     response.setHeader("Allow", "POST");
@@ -12,7 +21,7 @@ export default function handler(request, response) {
   }
 
   const providedCode = typeof request.body?.accessCode === "string" ? request.body.accessCode : "";
-  if (providedCode.trim() !== configuredCode) {
+  if (normalizeAccessCode(providedCode) !== normalizeAccessCode(configuredCode)) {
     response.status(401).json({ ok: false, message: "That code did not work. Please try again." });
     return;
   }
