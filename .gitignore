@@ -8,5 +8,6 @@ coverage/
 data/*.sqlite
 data/*.sqlite-shm
 data/*.sqlite-wal
+data/nova-chat-watcher-state.json
 
 .vercel
