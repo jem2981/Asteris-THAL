@@ -42,6 +42,21 @@
       line-height: 1.08;
     }
     p { margin: 0 0 16px; color: var(--muted); }
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .home-link {
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      white-space: nowrap;
+    }
     .notice {
       border: 1px solid var(--line);
       background: var(--panel-2);
@@ -154,11 +169,18 @@
     }
     .message.error { color: var(--danger); }
     .hidden { display: none; }
+    @media (max-width: 560px) {
+      .topline { display: grid; }
+      .home-link { justify-self: start; }
+    }
   </style>
 </head>
 <body>
   <main>
-    <h1>Ray + Asteris Deliverables</h1>
+    <div class="topline">
+      <h1>Ray + Asteris Deliverables</h1>
+      <a class="home-link" href="/">Back to dashboard</a>
+    </div>
     <p class="notice">Private prototype handoff page. Do not redistribute without permission.</p>
     <p>Enter the access code you were given separately to view the review packages. Newest packages are listed first, and earlier versions are kept for traceability.</p>
 

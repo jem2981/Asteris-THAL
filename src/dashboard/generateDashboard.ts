@@ -61,13 +61,33 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
     .chat-form { display:grid; grid-template-columns:minmax(100px,160px) 1fr auto; gap:10px; padding:16px; border-top:1px solid var(--line); }
     .chat-form input, .chat-form button { min-height:44px; border-radius:8px; border:1px solid var(--line); background:#0c1015; color:var(--text); padding:0 12px; }
     .chat-form button { background:#17392f; border-color:#3a806b; font-weight:700; cursor:pointer; }
+    .downloads-overlay { position:fixed; inset:0; z-index:10; display:none; place-items:center; padding:18px; background:rgba(3,7,12,.72); }
+    .downloads-overlay.open { display:grid; }
+    .downloads-window { width:min(760px,100%); max-height:calc(100vh - 36px); display:grid; grid-template-rows:auto auto 1fr; border:1px solid var(--line); border-radius:10px; background:var(--panel); overflow:hidden; box-shadow:0 24px 90px rgba(0,0,0,.5); }
+    .downloads-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; padding:16px; border-bottom:1px solid var(--line); }
+    .downloads-head h2 { margin:0 0 4px; }
+    .downloads-close { min-width:42px; min-height:38px; border:1px solid var(--line); border-radius:8px; background:var(--panel2); color:var(--text); cursor:pointer; }
+    .downloads-form { display:grid; gap:10px; padding:16px; border-bottom:1px solid var(--line); }
+    .downloads-form label { color:var(--text); font-weight:700; }
+    .downloads-form input, .downloads-form button { min-height:44px; border-radius:8px; border:1px solid var(--line); background:#0c1015; color:var(--text); padding:0 12px; }
+    .downloads-form button { background:#17392f; border-color:#3a806b; font-weight:700; cursor:pointer; }
+    .downloads-message { min-height:22px; color:var(--muted); margin:0; }
+    .downloads-message.error { color:var(--bad); }
+    .downloads-list { padding:16px; overflow:auto; display:grid; gap:10px; }
+    .download-option { display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; border:1px solid var(--line); border-radius:8px; padding:12px; background:#0c1015; }
+    .download-option input { width:20px; height:20px; accent-color:var(--ok); }
+    .download-option strong { display:block; color:var(--text); }
+    .download-option span { display:block; color:var(--muted); }
+    .download-link, .download-action { min-height:40px; display:inline-flex; align-items:center; justify-content:center; border:1px solid #3a806b; border-radius:8px; background:#17392f; color:var(--text); text-decoration:none; padding:0 12px; font-weight:700; cursor:pointer; }
+    .download-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:4px; }
+    .download-action.secondary { background:transparent; border-color:var(--line); color:var(--muted); }
     .badge { display:inline-flex; padding:3px 8px; border-radius:999px; border:1px solid var(--line); background:var(--panel2); color:var(--muted); font-size:12px; }
     .ok { color:var(--ok); } .warn { color:var(--warn); } .bad { color:var(--bad); }
     table { width:100%; border-collapse:collapse; overflow:auto; }
     th, td { text-align:left; border-bottom:1px solid var(--line); padding:10px; vertical-align:top; }
     th { color:var(--muted); font-weight:700; }
     code, pre { font-family:ui-monospace, SFMono-Regular, Consolas, monospace; }
-    @media (max-width:640px) { .chat-form { grid-template-columns:1fr; } }
+    @media (max-width:640px) { .chat-form, .download-option { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -80,10 +100,10 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
   <section>
     <h2>Review Access</h2>
     <div class="grid">
-      <a class="card action-card" href="/deliverables/ray/">
+      <button class="card action-card" type="button" data-open-downloads>
         <strong>Review Downloads</strong>
-        <p>Open the private Ray/Asteris handoff page for v0.3, v0.2, and v0.1 packages.</p>
-      </a>
+        <p>Open the private Ray/Asteris handoff downloads here. Enter the shared access code to show files.</p>
+      </button>
       <button class="card action-card" type="button" data-open-chat>
         <strong>Handoff Chat</strong>
         <p>Open the simple chat here as a pop-in window. Click outside or close to exit.</p>
@@ -152,6 +172,25 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
       .join("")}</tbody></table>
   </section>
 
+  <div class="downloads-overlay" id="downloads-overlay" aria-hidden="true">
+    <div class="downloads-window" role="dialog" aria-modal="true" aria-labelledby="downloads-title">
+      <div class="downloads-head">
+        <div>
+          <h2 id="downloads-title">Ray + Asteris Deliverables</h2>
+          <p>Private prototype handoff page. Do not redistribute without permission.</p>
+        </div>
+        <button class="downloads-close" type="button" data-close-downloads aria-label="Close downloads">X</button>
+      </div>
+      <form class="downloads-form" id="downloads-form">
+        <label for="downloads-code">Access code</label>
+        <input id="downloads-code" name="access-code" type="password" autocomplete="current-password" required>
+        <button id="downloads-submit" type="submit">Unlock downloads</button>
+        <p id="downloads-message" class="downloads-message" role="status" aria-live="polite"></p>
+      </form>
+      <section class="downloads-list" id="downloads-list" aria-label="Downloads"></section>
+    </div>
+  </div>
+
   <div class="chat-overlay" id="chat-overlay" aria-hidden="true">
     <div class="chat-window" role="dialog" aria-modal="true" aria-labelledby="chat-title">
       <div class="chat-head">
@@ -175,6 +214,12 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
     const chatForm = document.querySelector("#chat-form");
     const chatName = document.querySelector("#chat-name");
     const chatText = document.querySelector("#chat-text");
+    const downloadsOverlay = document.querySelector("#downloads-overlay");
+    const downloadsForm = document.querySelector("#downloads-form");
+    const downloadsCode = document.querySelector("#downloads-code");
+    const downloadsSubmit = document.querySelector("#downloads-submit");
+    const downloadsMessage = document.querySelector("#downloads-message");
+    const downloadsList = document.querySelector("#downloads-list");
     let chatTimer;
     chatName.value = localStorage.getItem("atcb-chat-name") || "";
 
@@ -215,6 +260,115 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
       clearInterval(chatTimer);
     }
 
+    function openDownloads() {
+      downloadsOverlay.classList.add("open");
+      downloadsOverlay.setAttribute("aria-hidden", "false");
+      downloadsCode.focus();
+    }
+
+    function closeDownloads() {
+      downloadsOverlay.classList.remove("open");
+      downloadsOverlay.setAttribute("aria-hidden", "true");
+    }
+
+    function renderDownloads(files) {
+      const heading = document.createElement("h3");
+      heading.textContent = "Choose files to download";
+      const intro = document.createElement("p");
+      intro.textContent = "Newest packages are listed first. Select one or more files, then download when ready.";
+      downloadsList.replaceChildren(heading, intro);
+
+      for (const file of files) {
+        const row = document.createElement("label");
+        row.className = "download-option";
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = true;
+        checkbox.dataset.href = file.href;
+        const text = document.createElement("span");
+        const title = document.createElement("strong");
+        title.textContent = file.label;
+        const description = document.createElement("span");
+        description.textContent = file.description || "Download file.";
+        const link = document.createElement("a");
+        link.className = "download-link";
+        link.href = file.href;
+        link.textContent = "Download";
+        link.setAttribute("download", "");
+        text.append(title, description);
+        row.append(checkbox, text, link);
+        downloadsList.append(row);
+      }
+
+      const actions = document.createElement("div");
+      actions.className = "download-actions";
+      const downloadSelected = document.createElement("button");
+      downloadSelected.type = "button";
+      downloadSelected.className = "download-action";
+      downloadSelected.textContent = "Download selected";
+      downloadSelected.addEventListener("click", () => {
+        const selected = downloadsList.querySelectorAll("input[type='checkbox']:checked");
+        if (selected.length === 0) {
+          downloadsMessage.className = "downloads-message error";
+          downloadsMessage.textContent = "Choose at least one file first.";
+          return;
+        }
+        for (const item of selected) {
+          const temporaryLink = document.createElement("a");
+          temporaryLink.href = item.dataset.href;
+          temporaryLink.download = "";
+          temporaryLink.rel = "noopener";
+          document.body.append(temporaryLink);
+          temporaryLink.click();
+          temporaryLink.remove();
+        }
+        downloadsMessage.className = "downloads-message";
+        downloadsMessage.textContent = "Download started.";
+      });
+      const clearSelection = document.createElement("button");
+      clearSelection.type = "button";
+      clearSelection.className = "download-action secondary";
+      clearSelection.textContent = "Clear selection";
+      clearSelection.addEventListener("click", () => {
+        downloadsList.querySelectorAll("input[type='checkbox']").forEach((item) => {
+          item.checked = false;
+        });
+      });
+      actions.append(downloadSelected, clearSelection);
+      downloadsList.append(actions);
+    }
+
+    document.querySelector("[data-open-downloads]").addEventListener("click", openDownloads);
+    document.querySelector("[data-close-downloads]").addEventListener("click", closeDownloads);
+    downloadsOverlay.addEventListener("click", (event) => {
+      if (event.target === downloadsOverlay) closeDownloads();
+    });
+    downloadsForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      downloadsSubmit.disabled = true;
+      downloadsMessage.className = "downloads-message";
+      downloadsMessage.textContent = "Checking access code...";
+      downloadsList.replaceChildren();
+      try {
+        const result = await fetch("/api/deliverables-ray-access", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ accessCode: downloadsCode.value })
+        });
+        const payload = await result.json();
+        if (!result.ok || !payload.ok) {
+          throw new Error(payload.message || "Access was not approved.");
+        }
+        renderDownloads(payload.files);
+        downloadsMessage.textContent = "Downloads unlocked.";
+      } catch (error) {
+        downloadsMessage.className = "downloads-message error";
+        downloadsMessage.textContent = error.message || "Access was not approved.";
+      } finally {
+        downloadsSubmit.disabled = false;
+      }
+    });
+
     document.querySelector("[data-open-chat]").addEventListener("click", openChat);
     document.querySelector("[data-close-chat]").addEventListener("click", closeChat);
     chatOverlay.addEventListener("click", (event) => {
@@ -222,6 +376,7 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
     });
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && chatOverlay.classList.contains("open")) closeChat();
+      if (event.key === "Escape" && downloadsOverlay.classList.contains("open")) closeDownloads();
     });
     chatForm.addEventListener("submit", async (event) => {
       event.preventDefault();
