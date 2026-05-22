@@ -45,7 +45,7 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
     .banner { background:#121923; }
     .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
     .card { border:1px solid var(--line); background:var(--panel); border-radius:8px; padding:14px; }
-    .action-card { display:block; width:100%; text-align:left; color:var(--text); text-decoration:none; transition:border-color .15s ease, transform .15s ease; cursor:pointer; }
+    .action-card { position:relative; display:block; width:100%; text-align:left; color:var(--text); text-decoration:none; transition:border-color .15s ease, transform .15s ease; cursor:pointer; }
     .action-card:hover { border-color:var(--ok); transform:translateY(-1px); }
     .action-card strong { display:block; font-size:18px; margin-bottom:6px; }
     .chat-overlay { position:fixed; inset:0; z-index:10; display:none; place-items:center; padding:18px; background:rgba(3,7,12,.72); }
@@ -57,10 +57,14 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
     .chat-messages { padding:16px; overflow:auto; display:grid; align-content:start; gap:10px; }
     .chat-message { border:1px solid var(--line); border-radius:8px; padding:10px; background:#0c1015; }
     .chat-message strong { color:var(--ok); }
+    .chat-message div { white-space:pre-wrap; overflow-wrap:anywhere; }
     .chat-message time { display:block; color:var(--muted); font-size:12px; margin-top:4px; }
-    .chat-form { display:grid; grid-template-columns:minmax(100px,160px) 1fr auto; gap:10px; padding:16px; border-top:1px solid var(--line); }
-    .chat-form input, .chat-form button { min-height:44px; border-radius:8px; border:1px solid var(--line); background:#0c1015; color:var(--text); padding:0 12px; }
+    .chat-form { display:grid; grid-template-columns:minmax(100px,160px) 1fr auto; gap:10px; align-items:end; padding:16px; border-top:1px solid var(--line); }
+    .chat-form input, .chat-form textarea, .chat-form button { min-height:44px; border-radius:8px; border:1px solid var(--line); background:#0c1015; color:var(--text); padding:10px 12px; }
+    .chat-form textarea { min-height:44px; max-height:132px; overflow:auto; resize:vertical; line-height:1.35; }
     .chat-form button { background:#17392f; border-color:#3a806b; font-weight:700; cursor:pointer; }
+    .notification-badge { position:absolute; top:10px; right:10px; min-width:24px; min-height:24px; display:inline-flex; align-items:center; justify-content:center; padding:0 7px; border-radius:999px; background:var(--warn); color:#171d25; font-weight:800; font-size:12px; box-shadow:0 0 0 2px var(--panel); }
+    .notification-badge[hidden] { display:none; }
     .downloads-overlay { position:fixed; inset:0; z-index:10; display:none; place-items:center; padding:18px; background:rgba(3,7,12,.72); }
     .downloads-overlay.open { display:grid; }
     .downloads-window { width:min(760px,100%); max-height:calc(100vh - 36px); display:grid; grid-template-rows:auto auto 1fr; border:1px solid var(--line); border-radius:10px; background:var(--panel); overflow:hidden; box-shadow:0 24px 90px rgba(0,0,0,.5); }
@@ -106,6 +110,7 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
       </button>
       <button class="card action-card" type="button" data-open-chat>
         <strong>Handoff Chat</strong>
+        <span class="notification-badge" id="chat-badge" hidden>0</span>
         <p>Open the simple chat here as a pop-in window. Click outside or close to exit.</p>
       </button>
     </div>
@@ -203,7 +208,7 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
       <section class="chat-messages" id="chat-messages" aria-live="polite"></section>
       <form class="chat-form" id="chat-form">
         <input id="chat-name" name="name" placeholder="Name" autocomplete="name" required>
-        <input id="chat-text" name="text" placeholder="Type a message" autocomplete="off" required>
+        <textarea id="chat-text" name="text" placeholder="Type a message" autocomplete="off" rows="2" required></textarea>
         <button type="submit">Send</button>
       </form>
     </div>
@@ -214,6 +219,7 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
     const chatForm = document.querySelector("#chat-form");
     const chatName = document.querySelector("#chat-name");
     const chatText = document.querySelector("#chat-text");
+    const chatBadge = document.querySelector("#chat-badge");
     const downloadsOverlay = document.querySelector("#downloads-overlay");
     const downloadsForm = document.querySelector("#downloads-form");
     const downloadsCode = document.querySelector("#downloads-code");
@@ -221,7 +227,37 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
     const downloadsMessage = document.querySelector("#downloads-message");
     const downloadsList = document.querySelector("#downloads-list");
     let chatTimer;
+    let lastSeenChatId = localStorage.getItem("atcb-chat-last-seen") || "";
     chatName.value = localStorage.getItem("atcb-chat-name") || "";
+
+    function newestMessageId(items) {
+      return items.length ? items[items.length - 1].id : "";
+    }
+
+    function markChatSeen(items) {
+      const newestId = newestMessageId(items);
+      if (!newestId) return;
+      lastSeenChatId = newestId;
+      localStorage.setItem("atcb-chat-last-seen", newestId);
+      chatBadge.hidden = true;
+      chatBadge.textContent = "0";
+    }
+
+    function updateChatBadge(items) {
+      const newestId = newestMessageId(items);
+      if (!newestId) {
+        chatBadge.hidden = true;
+        return;
+      }
+      if (!lastSeenChatId) {
+        markChatSeen(items);
+        return;
+      }
+      const seenIndex = items.findIndex((item) => item.id === lastSeenChatId);
+      const unreadCount = seenIndex >= 0 ? items.length - seenIndex - 1 : items.length;
+      chatBadge.textContent = unreadCount > 9 ? "9+" : String(unreadCount);
+      chatBadge.hidden = unreadCount === 0;
+    }
 
     function renderChat(items) {
       chatMessages.replaceChildren(...items.map((item) => {
@@ -237,6 +273,11 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
         return row;
       }));
       chatMessages.scrollTop = chatMessages.scrollHeight;
+      if (chatOverlay.classList.contains("open")) {
+        markChatSeen(items);
+      } else {
+        updateChatBadge(items);
+      }
     }
 
     async function refreshChat() {
@@ -389,6 +430,8 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
       chatText.value = "";
       await refreshChat();
     });
+    refreshChat().catch(() => {});
+    setInterval(() => refreshChat().catch(() => {}), 5000);
   </script>
 </body>
 </html>`;

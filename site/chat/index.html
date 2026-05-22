@@ -17,9 +17,11 @@
     #messages { padding:16px; overflow:auto; display:grid; align-content:start; gap:10px; }
     .message { border:1px solid var(--line); border-radius:8px; padding:10px; background:#0c1015; }
     .message strong { color:var(--accent); }
+    .message div { white-space:pre-wrap; overflow-wrap:anywhere; }
     .message time { display:block; color:var(--muted); font-size:12px; margin-top:4px; }
-    form { border-top:1px solid var(--line); border-bottom:0; display:grid; grid-template-columns:minmax(100px,160px) 1fr auto; gap:10px; }
-    input, button { min-height:44px; border-radius:8px; border:1px solid var(--line); background:#0c1015; color:var(--text); font:inherit; padding:0 12px; }
+    form { border-top:1px solid var(--line); border-bottom:0; display:grid; grid-template-columns:minmax(100px,160px) 1fr auto; gap:10px; align-items:end; }
+    input, textarea, button { min-height:44px; border-radius:8px; border:1px solid var(--line); background:#0c1015; color:var(--text); font:inherit; padding:10px 12px; }
+    textarea { min-height:44px; max-height:132px; overflow:auto; resize:vertical; line-height:1.35; }
     button { background:#17392f; border-color:#3a806b; font-weight:700; cursor:pointer; }
     @media (max-width:640px) { form { grid-template-columns:1fr; } }
   </style>
@@ -38,7 +40,7 @@
     <section id="messages" aria-live="polite"></section>
     <form id="form">
       <input id="name" name="name" placeholder="Name" autocomplete="name" required>
-      <input id="text" name="text" placeholder="Type a message" autocomplete="off" required>
+      <textarea id="text" name="text" placeholder="Type a message" autocomplete="off" rows="2" required></textarea>
       <button type="submit">Send</button>
     </form>
   </main>
