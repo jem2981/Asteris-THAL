@@ -207,7 +207,7 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
       <div class="chat-head">
         <div>
           <h2 id="chat-title">Handoff Chat</h2>
-          <p>Simple ephemeral chat for two reviewers. Do not use for private information.</p>
+          <p>Simple handoff chat for two reviewers. Messages are stored for continuity. Do not use for private information.</p>
         </div>
         <button class="chat-close" type="button" data-close-chat aria-label="Close chat">X</button>
       </div>
