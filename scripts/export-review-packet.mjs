@@ -150,6 +150,10 @@ writeFileSync(
 
 This review packet and demo surface are evidence artifacts only. They document the behavior of the ATCB v0.1 fictional prototype and do not introduce new runtime authority, private data, identity material, or framework ownership transfer.
 
+## Historical Baseline Note
+
+Some v0.1 materials are retained inside this v0.2 package as baseline evidence of the original MVP behavior. These files are preserved for traceability and should not be confused with the current v0.2 release surface.
+
 Generated: ${generated}
 Local Path: ${outputDir}
 Commit: ${commit}
@@ -185,6 +189,9 @@ const matrix = readFileSync(join(outputDir, "atcb-v0.1-acceptance-matrix.md"), "
 const demoOutput = readFileSync(join(outputDir, "atcb-v0.1-demo-output.txt"), "utf8");
 const testOutput = readFileSync(join(outputDir, "atcb-v0.1-test-output.txt"), "utf8");
 const scenarioOutput = readFileSync(join(outputDir, "atcb-v0.2-scenario-output.txt"), "utf8");
+const historicalBaselineNote = `## Historical Baseline Note
+
+Some v0.1 materials are retained inside this v0.2 package as baseline evidence of the original MVP behavior. These files are preserved for traceability and should not be confused with the current v0.2 release surface.`;
 
 writeFileSync(
   join(reviewDir, "atcb-v0.1-review.html"),
@@ -288,6 +295,7 @@ writeFileSync(
       <div class="label">fictional-data prototype / read-only evidence surface</div>
       <h1>Asteris–THAL Continuity Bridge v0.1</h1>
       <p class="notice">This review packet and demo surface are evidence artifacts only. They document the behavior of the ATCB v0.1 fictional prototype and do not introduce new runtime authority, private data, identity material, or framework ownership transfer.</p>
+      <div class="notice">${markdownToHtml(historicalBaselineNote)}</div>
     </header>
 
     <section>
@@ -395,6 +403,7 @@ writeFileSync(
     td, th { border-bottom: 1px solid var(--line); padding: 9px 10px; text-align: left; vertical-align: top; }
     th { color: var(--good); background: var(--panel-2); }
     .muted { color: var(--muted); }
+    .baseline-note { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); padding: 14px; margin-top: 14px; color: var(--muted); }
   </style>
 </head>
 <body>
@@ -410,6 +419,7 @@ writeFileSync(
       <br>
       <a class="handoff-link" href="/deliverables/ray">Ray + Asteris Deliverables</a>
       <p class="muted">Click the deliverables button, then enter the access code shared separately.</p>
+      <div class="baseline-note">${markdownToHtml(historicalBaselineNote)}</div>
     </header>
 
     <section>

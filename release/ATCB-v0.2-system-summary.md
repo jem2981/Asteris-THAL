@@ -1,14 +1,18 @@
 # ATCB v0.2 System Summary
 
-Generated: 2026-05-21T03:13:05.866Z
-Commit: 04c8d9b
-Tag: atcb-v0.1-handoff
+Generated: 2026-05-22T00:52:18.312Z
+Commit: 5ccd956
+Tag: pre-tag export
 
 ## What ATCB Is
 ATCB is a deterministic local continuity-governance engine and fictional-data prototype for conceptual comparison. It demonstrates memory integrity, thought-thread continuity, contradiction handling, boundary enforcement, state recovery, audit logging, review export, change-control tracking, and sealed milestone reporting.
 
 ## What ATCB Is Not
 ATCB is not a THAL engine integration. It is not an Asteris/Olympus/Enki corpus import. It is not a private identity system, production system, live LLM interface, external API workflow, ownership transfer, or identity fusion.
+
+## Historical Baseline Note
+
+Some v0.1 materials are retained inside this v0.2 package as baseline evidence of the original MVP behavior. These files are preserved for traceability and should not be confused with the current v0.2 release surface.
 
 ## Implemented Modules
 - identity kernel management
@@ -67,8 +71,8 @@ Audit events record event type, thread ID, summary, previous state, next state, 
 - npm audit --audit-level=moderate
 
 ## Commit/Tag Info
-Current export commit: 04c8d9b
-Current export tag: atcb-v0.1-handoff
+Current export commit: 5ccd956
+Current export tag: pre-tag export
 
 ## Review Instructions
 Ray/Asteris review should focus on conceptual alignment, terminology integrity, governance fit, boundary accuracy, continuity logic, failure/recovery behavior, and wording that could create ownership ambiguity.

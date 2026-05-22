@@ -1,5 +1,5 @@
 
-> asteris-thal-continuity-bridge@0.1.0 demo:scenarios
+> asteris-thal-continuity-bridge@0.2.0 demo:scenarios
 > tsx src/scenarios/runAllScenarios.ts
 
 ATCB v0.2 Scenario Suite

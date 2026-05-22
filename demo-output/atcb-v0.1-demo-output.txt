@@ -1,5 +1,5 @@
 
-> asteris-thal-continuity-bridge@0.1.0 demo
+> asteris-thal-continuity-bridge@0.2.0 demo
 > tsx src/demo/solaceProjectHeliosDemo.ts
 
 Asteris–THAL Continuity Bridge v0.1 Demo

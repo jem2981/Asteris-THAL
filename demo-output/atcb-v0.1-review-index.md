@@ -2,9 +2,13 @@
 
 This review packet and demo surface are evidence artifacts only. They document the behavior of the ATCB v0.1 fictional prototype and do not introduce new runtime authority, private data, identity material, or framework ownership transfer.
 
-Generated: 2026-05-21T22:51:02.703Z
+## Historical Baseline Note
+
+Some v0.1 materials are retained inside this v0.2 package as baseline evidence of the original MVP behavior. These files are preserved for traceability and should not be confused with the current v0.2 release surface.
+
+Generated: 2026-05-22T00:52:27.519Z
 Local Path: C:\Users\jmcdo\Dev\Asteris-THAL\demo-output
-Commit: 27903a1
+Commit: 5ccd956
 Tag: no exact tag on HEAD
 
 ## Files

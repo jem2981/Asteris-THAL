@@ -32,6 +32,7 @@
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
     .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; }
     .badge { display: inline-block; border: 1px solid var(--line); border-radius: 999px; padding: 4px 9px; margin: 3px 4px 3px 0; color: var(--muted); }
+    .handoff-link { display: inline-flex; align-items: center; min-height: 42px; margin-top: 14px; border: 1px solid color-mix(in srgb, var(--good), transparent 45%); border-radius: 8px; padding: 0 14px; color: var(--text); background: #17362e; text-decoration: none; font-weight: 700; }
     .pass { color: var(--good); border-color: color-mix(in srgb, var(--good), transparent 45%); }
     .warn { color: var(--warn); border-color: color-mix(in srgb, var(--warn), transparent 45%); }
     .block { color: var(--block); border-color: color-mix(in srgb, var(--block), transparent 45%); }
@@ -48,6 +49,7 @@
     td, th { border-bottom: 1px solid var(--line); padding: 9px 10px; text-align: left; vertical-align: top; }
     th { color: var(--good); background: var(--panel-2); }
     .muted { color: var(--muted); }
+    .baseline-note { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); padding: 14px; margin-top: 14px; color: var(--muted); }
   </style>
 </head>
 <body>
@@ -60,6 +62,12 @@
       <span class="badge pass">No corpus import</span>
       <span class="badge pass">No private identity material</span>
       <span class="badge pass">No LLM/API calls</span>
+      <br>
+      <a class="handoff-link" href="/deliverables/ray">Ray + Asteris Deliverables</a>
+      <p class="muted">Click the deliverables button, then enter the access code shared separately.</p>
+      <div class="baseline-note"><h3>Historical Baseline Note</h3>
+
+<p>Some v0.1 materials are retained inside this v0.2 package as baseline evidence of the original MVP behavior. These files are preserved for traceability and should not be confused with the current v0.2 release surface.</p></div>
     </header>
 
     <section>
@@ -80,7 +88,7 @@
     <section>
       <h2>3. Scenario Results</h2>
       <pre>
-&gt; asteris-thal-continuity-bridge@0.1.0 demo:scenarios
+&gt; asteris-thal-continuity-bridge@0.2.0 demo:scenarios
 &gt; tsx src/scenarios/runAllScenarios.ts
 
 ATCB v0.2 Scenario Suite

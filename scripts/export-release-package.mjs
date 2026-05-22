@@ -3,8 +3,10 @@ import {
   copyFileSync,
   existsSync,
   mkdirSync,
+  readdirSync,
   readFileSync,
   rmSync,
+  statSync,
   writeFileSync
 } from "node:fs";
 import { dirname, join, resolve } from "node:path";
@@ -18,6 +20,9 @@ const reviewDir = join(root, "review");
 const siteDir = join(root, "site");
 const stagingDir = join(releaseDir, ".release-staging");
 const releaseZip = join(releaseDir, "ATCB-v0.2-complete-review-packet.zip");
+const historicalBaselineNote = `## Historical Baseline Note
+
+Some v0.1 materials are retained inside this v0.2 package as baseline evidence of the original MVP behavior. These files are preserved for traceability and should not be confused with the current v0.2 release surface.`;
 
 mkdirSync(releaseDir, { recursive: true });
 mkdirSync(siteDir, { recursive: true });
@@ -46,7 +51,13 @@ function runNpm(args) {
 
 function git(args, fallback = "unavailable") {
   try {
-    return execFileSync("git", args, { cwd: root, encoding: "utf8" }).trim() || fallback;
+    return (
+      execFileSync("git", args, {
+        cwd: root,
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "ignore"]
+      }).trim() || fallback
+    );
   } catch {
     return fallback;
   }
@@ -68,18 +79,26 @@ function copyRequired(source, destination) {
   copyFileSync(source, destination);
 }
 
+function collectFiles(relativePath = "") {
+  const absolutePath = join(stagingDir, relativePath);
+  const stats = statSync(absolutePath);
+  if (stats.isFile()) {
+    return [relativePath.replace(/\\/g, "/")];
+  }
+
+  return readdirSync(absolutePath)
+    .sort()
+    .flatMap((entry) => collectFiles(join(relativePath, entry)));
+}
+
 function createZipFromStaging() {
   rmSync(releaseZip, { force: true });
-  const command = [
-    "Compress-Archive",
-    "-Path",
-    powershellQuote(join(stagingDir, "*")),
-    "-DestinationPath",
-    powershellQuote(releaseZip),
-    "-Force"
-  ].join(" ");
-  execFileSync("powershell.exe", ["-NoProfile", "-Command", command], {
-    cwd: root,
+  const entries = [
+    "00-ATCB-v0.2-boundary-attestation.md",
+    ...collectFiles().filter((entry) => entry !== "00-ATCB-v0.2-boundary-attestation.md")
+  ];
+  execFileSync("tar", ["-a", "-cf", releaseZip, ...entries], {
+    cwd: stagingDir,
     encoding: "utf8"
   });
 }
@@ -101,6 +120,8 @@ ATCB is a deterministic local continuity-governance engine and fictional-data pr
 
 ## What ATCB Is Not
 ATCB is not a THAL engine integration. It is not an Asteris/Olympus/Enki corpus import. It is not a private identity system, production system, live LLM interface, external API workflow, ownership transfer, or identity fusion.
+
+${historicalBaselineNote}
 
 ## Implemented Modules
 - identity kernel management
@@ -183,6 +204,8 @@ Generated: ${generated}
 
 ## Evidence
 See demo-output/atcb-v0.1-test-output.txt, demo-output/atcb-v0.1-demo-output.txt, and demo-output/atcb-v0.2-scenario-output.txt.
+
+${historicalBaselineNote}
 `;
 
 const boundaryAttestation = `# ATCB v0.2 Boundary Attestation
@@ -191,15 +214,17 @@ No THAL engine integration.
 No Asteris/Olympus/Enki corpus.
 No private identity material.
 No LLM/API calls.
+Fictional/sanitized scenarios only.
 No sentience claim.
 No ownership transfer.
 No identity fusion.
-All scenarios are fictional/sanitized.
 `;
 
 const reviewInstructions = `# ATCB v0.2 Review Instructions
 
 Review this package as a conceptual comparison review artifact only.
+
+${historicalBaselineNote}
 
 ## Review Focus
 - terminology integrity
@@ -214,13 +239,14 @@ Review this package as a conceptual comparison review artifact only.
 No repo access, remote authority, private data access, corpus exchange, system merger, production authority, or runtime control is included.
 
 ## Suggested Order
-1. Read ATCB-v0.2-boundary-attestation.md.
+1. Read 00-ATCB-v0.2-boundary-attestation.md.
 2. Read ATCB-v0.2-system-summary.md.
 3. Open review/atcb-v0.2-dashboard.html.
 4. Inspect demo and scenario outputs.
 5. Fill out the review notes template.
 `;
 
+writeFileSync(join(releaseDir, "00-ATCB-v0.2-boundary-attestation.md"), boundaryAttestation, "utf8");
 writeFileSync(join(releaseDir, "ATCB-v0.2-system-summary.md"), systemSummary, "utf8");
 writeFileSync(join(releaseDir, "ATCB-v0.2-verification-report.md"), verificationReport, "utf8");
 writeFileSync(join(releaseDir, "ATCB-v0.2-boundary-attestation.md"), boundaryAttestation, "utf8");
@@ -234,6 +260,7 @@ rmSync(stagingDir, { recursive: true, force: true });
 mkdirSync(stagingDir, { recursive: true });
 
 for (const fileName of [
+  "00-ATCB-v0.2-boundary-attestation.md",
   "ATCB-v0.2-system-summary.md",
   "ATCB-v0.2-verification-report.md",
   "ATCB-v0.2-boundary-attestation.md",
@@ -243,6 +270,9 @@ for (const fileName of [
 }
 
 for (const fileName of [
+  "00-ATCB-v0.2-boundary-attestation.md",
+  "ATCB-v0.2-review-handoff.md",
+  "ATCB-v0.2-review-handoff.txt",
   "ATCB-v0.1-review-handoff.md",
   "ATCB-v0.1-review-handoff.txt",
   "ATCB-v0.1-review-page.html",
@@ -264,12 +294,17 @@ for (const fileName of [
   copyRequired(join(outputDir, fileName), join(stagingDir, "demo-output", fileName));
 }
 
+copyRequired(
+  join(root, "review-feedback", "atcb-v0.2-ray-asteris-review-response.md"),
+  join(stagingDir, "review-feedback", "atcb-v0.2-ray-asteris-review-response.md")
+);
 copyRequired(join(reviewDir, "atcb-v0.2-dashboard.html"), join(stagingDir, "review", "atcb-v0.2-dashboard.html"));
 
 createZipFromStaging();
 rmSync(stagingDir, { recursive: true, force: true });
 
 console.log("ATCB v0.2 release package refreshed:");
+console.log(join(releaseDir, "00-ATCB-v0.2-boundary-attestation.md"));
 console.log(join(releaseDir, "ATCB-v0.2-system-summary.md"));
 console.log(join(releaseDir, "ATCB-v0.2-verification-report.md"));
 console.log(join(releaseDir, "ATCB-v0.2-boundary-attestation.md"));
