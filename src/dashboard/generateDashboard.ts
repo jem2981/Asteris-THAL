@@ -454,7 +454,7 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
       if (event.target === chatOverlay) closeChat();
     });
     chatText.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" && !event.ctrlKey) {
+      if (event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();
         chatForm.requestSubmit();
       }
