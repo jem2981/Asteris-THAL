@@ -44,6 +44,8 @@
     .downloads-close { min-width:42px; min-height:38px; border:1px solid var(--line); border-radius:8px; background:var(--panel2); color:var(--text); cursor:pointer; }
     .downloads-form { display:grid; gap:10px; padding:16px; border-bottom:1px solid var(--line); }
     .downloads-form label { color:var(--text); font-weight:700; }
+    .downloads-remember { display:flex; gap:10px; align-items:center; color:var(--muted); font-weight:500 !important; }
+    .downloads-remember input { width:18px; min-height:18px; accent-color:var(--ok); }
     .downloads-form input, .downloads-form button { min-height:44px; border-radius:8px; border:1px solid var(--line); background:#0c1015; color:var(--text); padding:0 12px; }
     .downloads-form button { background:#17392f; border-color:#3a806b; font-weight:700; cursor:pointer; }
     .downloads-message { min-height:22px; color:var(--muted); margin:0; }
@@ -144,6 +146,10 @@
       <form class="downloads-form" id="downloads-form">
         <label for="downloads-code">Access code</label>
         <input id="downloads-code" name="access-code" type="password" autocomplete="current-password" required>
+        <label class="downloads-remember" for="downloads-remember-device">
+          <input id="downloads-remember-device" name="remember-device" type="checkbox">
+          Remember this device for 30 days
+        </label>
         <button id="downloads-submit" type="submit">Unlock downloads</button>
         <p id="downloads-message" class="downloads-message" role="status" aria-live="polite"></p>
       </form>
@@ -178,6 +184,7 @@
     const downloadsOverlay = document.querySelector("#downloads-overlay");
     const downloadsForm = document.querySelector("#downloads-form");
     const downloadsCode = document.querySelector("#downloads-code");
+    const downloadsRemember = document.querySelector("#downloads-remember-device");
     const downloadsSubmit = document.querySelector("#downloads-submit");
     const downloadsMessage = document.querySelector("#downloads-message");
     const downloadsList = document.querySelector("#downloads-list");
@@ -260,6 +267,7 @@
       downloadsOverlay.classList.add("open");
       downloadsOverlay.setAttribute("aria-hidden", "false");
       downloadsCode.focus();
+      checkRememberedDownloads();
     }
 
     function closeDownloads() {
@@ -267,7 +275,7 @@
       downloadsOverlay.setAttribute("aria-hidden", "true");
     }
 
-    function renderDownloads(files) {
+    function renderDownloads(files, remembered = false) {
       const heading = document.createElement("h3");
       heading.textContent = "Choose files to download";
       const intro = document.createElement("p");
@@ -331,7 +339,34 @@
         });
       });
       actions.append(downloadSelected, clearSelection);
+      if (remembered) {
+        const forgetDevice = document.createElement("button");
+        forgetDevice.type = "button";
+        forgetDevice.className = "download-action secondary";
+        forgetDevice.textContent = "Forget this device";
+        forgetDevice.addEventListener("click", async () => {
+          await fetch("/api/deliverables-ray-access", { method: "DELETE" });
+          downloadsList.replaceChildren();
+          downloadsMessage.className = "downloads-message";
+          downloadsMessage.textContent = "This device has been forgotten.";
+        });
+        actions.append(forgetDevice);
+      }
       downloadsList.append(actions);
+    }
+
+    async function checkRememberedDownloads() {
+      try {
+        const result = await fetch("/api/deliverables-ray-access", { cache: "no-store" });
+        const payload = await result.json();
+        if (result.ok && payload.ok) {
+          renderDownloads(payload.files, true);
+          downloadsMessage.className = "downloads-message";
+          downloadsMessage.textContent = "Downloads unlocked for this device.";
+        }
+      } catch {
+        // A missing or expired remember cookie simply leaves the access form in place.
+      }
     }
 
     document.querySelector("[data-open-downloads]").addEventListener("click", openDownloads);
@@ -349,14 +384,17 @@
         const result = await fetch("/api/deliverables-ray-access", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ accessCode: downloadsCode.value })
+          body: JSON.stringify({
+            accessCode: downloadsCode.value,
+            rememberDevice: downloadsRemember.checked
+          })
         });
         const payload = await result.json();
         if (!result.ok || !payload.ok) {
           throw new Error(payload.message || "Access was not approved.");
         }
-        renderDownloads(payload.files);
-        downloadsMessage.textContent = "Downloads unlocked.";
+        renderDownloads(payload.files, payload.remembered);
+        downloadsMessage.textContent = payload.remembered ? "Downloads unlocked and remembered on this device." : "Downloads unlocked.";
       } catch (error) {
         downloadsMessage.className = "downloads-message error";
         downloadsMessage.textContent = error.message || "Access was not approved.";

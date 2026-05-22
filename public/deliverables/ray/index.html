@@ -87,6 +87,18 @@
       margin-top: 20px;
     }
     label { color: var(--text); font-weight: 650; }
+    .remember-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .remember-row input {
+      width: 18px;
+      min-height: 18px;
+      accent-color: var(--accent);
+    }
     input {
       width: 100%;
       min-height: 48px;
@@ -192,6 +204,10 @@
     <form id="access-form">
       <label for="access-code">Access code</label>
       <input id="access-code" name="access-code" type="password" autocomplete="current-password" required>
+      <label class="remember-row" for="remember-device">
+        <input id="remember-device" name="remember-device" type="checkbox">
+        Remember this device for 30 days
+      </label>
       <button id="submit-button" type="submit">Unlock downloads</button>
     </form>
 
@@ -202,9 +218,107 @@
   <script>
     const form = document.querySelector("#access-form");
     const codeInput = document.querySelector("#access-code");
+    const rememberInput = document.querySelector("#remember-device");
     const button = document.querySelector("#submit-button");
     const message = document.querySelector("#message");
     const downloads = document.querySelector("#downloads");
+
+    function renderDownloads(files, remembered = false) {
+      const heading = document.createElement("h2");
+      heading.textContent = "Choose files to download";
+      const intro = document.createElement("p");
+      intro.textContent = "Select one or more files, then download them when ready. The newest review package is listed first.";
+      downloads.replaceChildren(heading, intro);
+
+      for (const file of files) {
+        const row = document.createElement("label");
+        row.className = "download-option";
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = true;
+        checkbox.dataset.href = file.href;
+        checkbox.dataset.label = file.label;
+        const text = document.createElement("span");
+        const title = document.createElement("strong");
+        title.textContent = file.label;
+        const description = document.createElement("span");
+        description.textContent = file.description || "Download file.";
+        const link = document.createElement("a");
+        link.className = "download";
+        link.href = file.href;
+        link.textContent = "Download";
+        link.setAttribute("download", "");
+        text.append(title, description);
+        row.append(checkbox, text, link);
+        downloads.append(row);
+      }
+
+      const actions = document.createElement("div");
+      actions.className = "download-actions";
+      const downloadSelected = document.createElement("button");
+      downloadSelected.type = "button";
+      downloadSelected.textContent = "Download selected";
+      downloadSelected.addEventListener("click", () => {
+        const selected = downloads.querySelectorAll("input[type='checkbox']:checked");
+        if (selected.length === 0) {
+          message.className = "message error";
+          message.textContent = "Choose at least one file first.";
+          return;
+        }
+        for (const item of selected) {
+          const temporaryLink = document.createElement("a");
+          temporaryLink.href = item.dataset.href;
+          temporaryLink.download = "";
+          temporaryLink.rel = "noopener";
+          document.body.append(temporaryLink);
+          temporaryLink.click();
+          temporaryLink.remove();
+        }
+        message.className = "message";
+        message.textContent = "Download started.";
+      });
+      const clearSelection = document.createElement("button");
+      clearSelection.type = "button";
+      clearSelection.className = "secondary";
+      clearSelection.textContent = "Clear selection";
+      clearSelection.addEventListener("click", () => {
+        downloads.querySelectorAll("input[type='checkbox']").forEach((item) => {
+          item.checked = false;
+        });
+      });
+      actions.append(downloadSelected, clearSelection);
+
+      if (remembered) {
+        const forgetDevice = document.createElement("button");
+        forgetDevice.type = "button";
+        forgetDevice.className = "secondary";
+        forgetDevice.textContent = "Forget this device";
+        forgetDevice.addEventListener("click", async () => {
+          await fetch("/api/deliverables-ray-access", { method: "DELETE" });
+          downloads.classList.add("hidden");
+          downloads.replaceChildren();
+          message.className = "message";
+          message.textContent = "This device has been forgotten.";
+        });
+        actions.append(forgetDevice);
+      }
+
+      downloads.append(actions);
+      downloads.classList.remove("hidden");
+    }
+
+    async function checkRememberedAccess() {
+      try {
+        const result = await fetch("/api/deliverables-ray-access", { cache: "no-store" });
+        const payload = await result.json();
+        if (result.ok && payload.ok) {
+          renderDownloads(payload.files, true);
+          message.textContent = "Downloads unlocked for this device.";
+        }
+      } catch {
+        // A missing or expired remember cookie simply leaves the access form in place.
+      }
+    }
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -218,7 +332,10 @@
         const result = await fetch("/api/deliverables-ray-access", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ accessCode: codeInput.value })
+          body: JSON.stringify({
+            accessCode: codeInput.value,
+            rememberDevice: rememberInput.checked
+          })
         });
         const payload = await result.json();
 
@@ -226,72 +343,8 @@
           throw new Error(payload.message || "Access was not approved.");
         }
 
-        const heading = document.createElement("h2");
-        heading.textContent = "Choose files to download";
-        const intro = document.createElement("p");
-        intro.textContent = "Select one or more files, then download them when ready. The newest review package is listed first.";
-        downloads.append(heading, intro);
-
-        for (const [index, file] of payload.files.entries()) {
-          const row = document.createElement("label");
-          row.className = "download-option";
-          const checkbox = document.createElement("input");
-          checkbox.type = "checkbox";
-          checkbox.checked = true;
-          checkbox.dataset.href = file.href;
-          checkbox.dataset.label = file.label;
-          const text = document.createElement("span");
-          const title = document.createElement("strong");
-          title.textContent = file.label;
-          const description = document.createElement("span");
-          description.textContent = file.description || "Download file.";
-          const link = document.createElement("a");
-          link.className = "download";
-          link.href = file.href;
-          link.textContent = "Download";
-          link.setAttribute("download", "");
-          text.append(title, description);
-          row.append(checkbox, text, link);
-          downloads.append(row);
-        }
-
-        const actions = document.createElement("div");
-        actions.className = "download-actions";
-        const downloadSelected = document.createElement("button");
-        downloadSelected.type = "button";
-        downloadSelected.textContent = "Download selected";
-        downloadSelected.addEventListener("click", () => {
-          const selected = downloads.querySelectorAll("input[type='checkbox']:checked");
-          if (selected.length === 0) {
-            message.className = "message error";
-            message.textContent = "Choose at least one file first.";
-            return;
-          }
-          for (const item of selected) {
-            const temporaryLink = document.createElement("a");
-            temporaryLink.href = item.dataset.href;
-            temporaryLink.download = "";
-            temporaryLink.rel = "noopener";
-            document.body.append(temporaryLink);
-            temporaryLink.click();
-            temporaryLink.remove();
-          }
-          message.className = "message";
-          message.textContent = "Download started.";
-        });
-        const clearSelection = document.createElement("button");
-        clearSelection.type = "button";
-        clearSelection.className = "secondary";
-        clearSelection.textContent = "Clear selection";
-        clearSelection.addEventListener("click", () => {
-          downloads.querySelectorAll("input[type='checkbox']").forEach((item) => {
-            item.checked = false;
-          });
-        });
-        actions.append(downloadSelected, clearSelection);
-        downloads.append(actions);
-        downloads.classList.remove("hidden");
-        message.textContent = "Downloads unlocked.";
+        renderDownloads(payload.files, payload.remembered);
+        message.textContent = payload.remembered ? "Downloads unlocked and remembered on this device." : "Downloads unlocked.";
       } catch (error) {
         message.className = "message error";
         message.textContent = error.message || "Access was not approved.";
@@ -299,6 +352,8 @@
         button.disabled = false;
       }
     });
+
+    checkRememberedAccess();
   </script>
 </body>
 </html>
