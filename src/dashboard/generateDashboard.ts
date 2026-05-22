@@ -44,6 +44,9 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
     .banner { background:#121923; }
     .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
     .card { border:1px solid var(--line); background:var(--panel); border-radius:8px; padding:14px; }
+    .action-card { display:block; color:var(--text); text-decoration:none; transition:border-color .15s ease, transform .15s ease; }
+    .action-card:hover { border-color:var(--ok); transform:translateY(-1px); }
+    .action-card strong { display:block; font-size:18px; margin-bottom:6px; }
     .badge { display:inline-flex; padding:3px 8px; border-radius:999px; border:1px solid var(--line); background:var(--panel2); color:var(--muted); font-size:12px; }
     .ok { color:var(--ok); } .warn { color:var(--warn); } .bad { color:var(--bad); }
     table { width:100%; border-collapse:collapse; overflow:auto; }
@@ -58,6 +61,20 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
     <h1>ATCB v0.3 Continuity-Governance Dashboard</h1>
     <p>ATCB is a continuity-governance layer, not a mind. No sentience claim. No identity fusion. No private corpus import.</p>
   </header>
+
+  <section>
+    <h2>Review Access</h2>
+    <div class="grid">
+      <a class="card action-card" href="/deliverables/ray/">
+        <strong>Review Downloads</strong>
+        <p>Open the private Ray/Asteris handoff page for v0.3, v0.2, and v0.1 packages.</p>
+      </a>
+      <a class="card action-card" href="/chat/">
+        <strong>Handoff Chat</strong>
+        <p>Open the simple real-time handoff chat for informal coordination.</p>
+      </a>
+    </div>
+  </section>
 
   <section>
     <h2>System Health</h2>
@@ -102,8 +119,8 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
 
   <section>
     <h2>Blocked Recoveries</h2>
-    <table><thead><tr><th>Time</th><th>Summary</th></tr></thead><tbody>${blockedRecoveries
-      .map((event) => `<tr><td>${event.createdAt}</td><td>${esc(event.summary)}</td></tr>`)
+    <table><thead><tr><th>Event</th><th>Summary</th></tr></thead><tbody>${blockedRecoveries
+      .map((event) => `<tr><td>${esc(event.eventType)}</td><td>${esc(event.summary)}</td></tr>`)
       .join("") || `<tr><td colspan="2" class="ok">None</td></tr>`}</tbody></table>
   </section>
 
