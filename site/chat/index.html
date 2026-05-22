@@ -12,6 +12,8 @@
     header, form { padding:16px; border-bottom:1px solid var(--line); }
     h1 { margin:0 0 4px; font-size:26px; }
     p { margin:0; color:var(--muted); }
+    .topline { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
+    .home-link { color:var(--accent); text-decoration:none; border:1px solid var(--line); border-radius:8px; padding:8px 10px; white-space:nowrap; }
     #messages { padding:16px; overflow:auto; display:grid; align-content:start; gap:10px; }
     .message { border:1px solid var(--line); border-radius:8px; padding:10px; background:#0c1015; }
     .message strong { color:var(--accent); }
@@ -25,8 +27,13 @@
 <body>
   <main>
     <header>
-      <h1>ATCB Handoff Chat</h1>
-      <p>Simple ephemeral chat for two reviewers. Do not use for private information.</p>
+      <div class="topline">
+        <div>
+          <h1>ATCB Handoff Chat</h1>
+          <p>Simple ephemeral chat for two reviewers. Do not use for private information.</p>
+        </div>
+        <a class="home-link" href="/">Back to dashboard</a>
+      </div>
     </header>
     <section id="messages" aria-live="polite"></section>
     <form id="form">
