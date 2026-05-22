@@ -453,6 +453,12 @@ export function generateDashboard(outputPath = "review/atcb-v0.3-dashboard.html"
     chatOverlay.addEventListener("click", (event) => {
       if (event.target === chatOverlay) closeChat();
     });
+    chatText.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.ctrlKey) {
+        event.preventDefault();
+        chatForm.requestSubmit();
+      }
+    });
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && chatOverlay.classList.contains("open")) closeChat();
       if (event.key === "Escape" && downloadsOverlay.classList.contains("open")) closeDownloads();

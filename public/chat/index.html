@@ -85,6 +85,13 @@
       await refresh();
     });
 
+    textInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.ctrlKey) {
+        event.preventDefault();
+        form.requestSubmit();
+      }
+    });
+
     refresh();
     setInterval(refresh, 1500);
   </script>
