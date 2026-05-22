@@ -4,13 +4,19 @@ Date: May 21, 2026
 
 Files included on the private handoff page:
 
-1. Setup Guide
+1. ATCB v0.2 Review Package
+   Current hardened review package. This is the newest review package and should be opened first.
+
+2. ATCB v0.1 Baseline Package
+   Historical MVP baseline package retained for traceability. It is not deleted or replaced.
+
+3. Setup Guide
    Short guide for opening the ATCB review dashboard and release package.
 
-2. System Package
-   Complete ATCB v0.2 review packet ZIP generated from the local release folder.
+4. System Package Compatibility Copy
+   Compatibility copy of the current ATCB v0.2 review package.
 
-3. Release Notes
+5. Release Notes
    This plain-language summary.
 
 Live page:

@@ -30,14 +30,24 @@ export default function handler(request, response) {
     ok: true,
     files: [
       {
-        label: "Setup Guide",
-        href: "/deliverables/ray/Ray-Asteris-Setup-Guide.pdf",
-        description: "Short guide for opening the review page and release package."
+        label: "ATCB v0.2 Review Package",
+        href: "/deliverables/ray/ATCB-v0.2-review-hardened-package.zip",
+        description: "Current hardened review package. Newest version; use this first."
       },
       {
-        label: "System Package",
+        label: "ATCB v0.1 Baseline Package",
+        href: "/deliverables/ray/ATCB-v0.1-baseline-review-packet.zip",
+        description: "Historical MVP baseline package retained for traceability."
+      },
+      {
+        label: "Setup Guide",
+        href: "/deliverables/ray/Ray-Asteris-Setup-Guide.pdf",
+        description: "Short guide for opening the review page and package files."
+      },
+      {
+        label: "System Package Compatibility Copy",
         href: "/deliverables/ray/Ray-Asteris-System-Package.zip",
-        description: "Complete ATCB v0.2 review packet ZIP."
+        description: "Compatibility copy of the current ATCB v0.2 review package."
       },
       {
         label: "Release Notes",
