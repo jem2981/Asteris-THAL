@@ -1,6 +1,6 @@
 {
   "name": "asteris-thal-continuity-bridge",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,13 +8,18 @@
     "build:site": "node scripts/build-site.mjs",
     "demo": "tsx src/demo/solaceProjectHeliosDemo.ts",
     "demo:scenarios": "tsx src/scenarios/runAllScenarios.ts",
+    "demo:service": "node --no-warnings --import tsx src/scripts/seed-demo.ts && node --no-warnings --import tsx src/api/server.ts",
+    "demo:v03": "node --no-warnings --import tsx src/scenarios/runV03ServiceDemo.ts",
+    "db:migrate": "node --no-warnings --import tsx src/db/migrate.ts",
+    "db:seed": "node --no-warnings --import tsx src/scripts/seed-demo.ts",
+    "dashboard:v03": "node --no-warnings --import tsx src/dashboard/generateDashboard.ts",
     "export:demo": "npm run demo > demo-output/atcb-v0.1-demo-output.txt",
     "export:handoff": "node scripts/export-handoff-package.mjs",
     "export:release": "node scripts/export-release-package.mjs",
     "export:review": "node scripts/export-review-packet.mjs",
     "export:test": "npm test > demo-output/atcb-v0.1-test-output.txt",
     "open:review": "start review/atcb-v0.1-review.html",
-    "test": "vitest run"
+    "test": "node --no-warnings ./node_modules/vitest/vitest.mjs run"
   },
   "devDependencies": {
     "@types/node": "^20.12.12",

@@ -12,6 +12,8 @@ import { ChangeControlLedger } from "./changeControl.js";
 import type { ConflictRecord, IdentityKernel, MemoryRecord, ReviewResult } from "./types.js";
 
 export * from "./types.js";
+export * as AtcbV03Types from "./contracts/publicTypes.js";
+export * from "./contracts/atcbContract.js";
 export { createSolaceIdentityKernel } from "./identityKernel.js";
 export { MemoryLedger } from "./memoryLedger.js";
 export { ThreadMap } from "./threadMap.js";

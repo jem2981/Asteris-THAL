@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ATCB Handoff Chat</title>
+  <style>
+    :root { color-scheme: dark; --bg:#101317; --panel:#181e26; --line:#33404f; --text:#f1f5f9; --muted:#aeb8c6; --accent:#75d6b1; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:var(--bg); color:var(--text); font:16px/1.5 system-ui, Segoe UI, sans-serif; display:grid; place-items:center; padding:16px; }
+    main { width:min(760px,100%); height:min(760px,calc(100vh - 32px)); display:grid; grid-template-rows:auto 1fr auto; border:1px solid var(--line); border-radius:10px; background:var(--panel); overflow:hidden; }
+    header, form { padding:16px; border-bottom:1px solid var(--line); }
+    h1 { margin:0 0 4px; font-size:26px; }
+    p { margin:0; color:var(--muted); }
+    #messages { padding:16px; overflow:auto; display:grid; align-content:start; gap:10px; }
+    .message { border:1px solid var(--line); border-radius:8px; padding:10px; background:#0c1015; }
+    .message strong { color:var(--accent); }
+    .message time { display:block; color:var(--muted); font-size:12px; margin-top:4px; }
+    form { border-top:1px solid var(--line); border-bottom:0; display:grid; grid-template-columns:minmax(100px,160px) 1fr auto; gap:10px; }
+    input, button { min-height:44px; border-radius:8px; border:1px solid var(--line); background:#0c1015; color:var(--text); font:inherit; padding:0 12px; }
+    button { background:#17392f; border-color:#3a806b; font-weight:700; cursor:pointer; }
+    @media (max-width:640px) { form { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <h1>ATCB Handoff Chat</h1>
+      <p>Simple ephemeral chat for two reviewers. Do not use for private information.</p>
+    </header>
+    <section id="messages" aria-live="polite"></section>
+    <form id="form">
+      <input id="name" name="name" placeholder="Name" autocomplete="name" required>
+      <input id="text" name="text" placeholder="Type a message" autocomplete="off" required>
+      <button type="submit">Send</button>
+    </form>
+  </main>
+  <script>
+    const messages = document.querySelector("#messages");
+    const form = document.querySelector("#form");
+    const nameInput = document.querySelector("#name");
+    const textInput = document.querySelector("#text");
+    nameInput.value = localStorage.getItem("atcb-chat-name") || "";
+
+    function render(items) {
+      messages.replaceChildren(...items.map((item) => {
+        const row = document.createElement("article");
+        row.className = "message";
+        const name = document.createElement("strong");
+        name.textContent = item.name;
+        const text = document.createElement("div");
+        text.textContent = item.text;
+        const time = document.createElement("time");
+        time.textContent = new Date(item.createdAt).toLocaleString();
+        row.append(name, text, time);
+        return row;
+      }));
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    async function refresh() {
+      const result = await fetch("/api/chat", { cache: "no-store" });
+      const payload = await result.json();
+      if (payload.ok) render(payload.messages);
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      localStorage.setItem("atcb-chat-name", nameInput.value.trim());
+      await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: nameInput.value, text: textInput.value })
+      });
+      textInput.value = "";
+      await refresh();
+    });
+
+    refresh();
+    setInterval(refresh, 1500);
+  </script>
+</body>
+</html>

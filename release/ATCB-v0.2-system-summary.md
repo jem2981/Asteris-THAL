@@ -1,7 +1,7 @@
 # ATCB v0.2 System Summary
 
-Generated: 2026-05-22T00:52:18.312Z
-Commit: 5ccd956
+Generated: 2026-05-22T01:57:40.063Z
+Commit: bd723ae
 Tag: pre-tag export
 
 ## What ATCB Is
@@ -71,7 +71,7 @@ Audit events record event type, thread ID, summary, previous state, next state, 
 - npm audit --audit-level=moderate
 
 ## Commit/Tag Info
-Current export commit: 5ccd956
+Current export commit: bd723ae
 Current export tag: pre-tag export
 
 ## Review Instructions

@@ -16,6 +16,7 @@ function runNpm(args) {
       ...process.env,
       CI: "1",
       FORCE_COLOR: "0",
+      NODE_OPTIONS: "--no-warnings",
       NO_COLOR: "1"
     },
     shell: useShell
@@ -30,8 +31,10 @@ function runNpm(args) {
 }
 
 runNpm(["run", "export:review"]);
+runNpm(["run", "dashboard:v03"]);
 mkdirSync(siteDir, { recursive: true });
-copyFileSync(join(root, "review", "atcb-v0.2-dashboard.html"), join(siteDir, "index.html"));
+copyFileSync(join(root, "review", "atcb-v0.3-dashboard.html"), join(siteDir, "index.html"));
+copyFileSync(join(root, "review", "atcb-v0.3-dashboard.html"), join(siteDir, "atcb-v0.3-dashboard.html"));
 copyFileSync(join(root, "review", "atcb-v0.2-dashboard.html"), join(siteDir, "atcb-v0.2-dashboard.html"));
 copyFileSync(join(root, "review", "atcb-v0.1-review.html"), join(siteDir, "atcb-v0.1-review.html"));
 cpSync(join(root, "public"), siteDir, { recursive: true });

@@ -30,6 +30,11 @@ export default function handler(request, response) {
     ok: true,
     files: [
       {
+        label: "ATCB v0.3 Service Package",
+        href: "/deliverables/ray/ATCB-v0.3-continuity-governance-service.zip",
+        description: "Newest standalone continuity-governance service package. Use this first."
+      },
+      {
         label: "ATCB v0.2 Review Package",
         href: "/deliverables/ray/ATCB-v0.2-review-hardened-package.zip",
         description: "Current hardened review package. Newest version; use this first."

@@ -1,22 +1,25 @@
 Ray + Asteris Deliverables
-Version: Prototype handoff v0.2
+Version: Prototype handoff v0.3
 Date: May 21, 2026
 
 Files included on the private handoff page:
 
-1. ATCB v0.2 Review Package
-   Current hardened review package. This is the newest review package and should be opened first.
+1. ATCB v0.3 Service Package
+   Newest standalone continuity-governance service package. Use this first.
 
-2. ATCB v0.1 Baseline Package
+2. ATCB v0.2 Review Package
+   Hardened v0.2 review package retained below v0.3 for traceability.
+
+3. ATCB v0.1 Baseline Package
    Historical MVP baseline package retained for traceability. It is not deleted or replaced.
 
-3. Setup Guide
+4. Setup Guide
    Short guide for opening the ATCB review dashboard and release package.
 
-4. System Package Compatibility Copy
+5. System Package Compatibility Copy
    Compatibility copy of the current ATCB v0.2 review package.
 
-5. Release Notes
+6. Release Notes
    This plain-language summary.
 
 Live page:

@@ -4,5 +4,8 @@ coverage/
 .vercel/
 .env
 .env.*
+data/*.sqlite
+data/*.sqlite-shm
+data/*.sqlite-wal
 
 .vercel

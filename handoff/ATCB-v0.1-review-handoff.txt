@@ -188,7 +188,7 @@ This review packet and demo surface are evidence artifacts only. They document t
 Full Demo Output
 
 
-> asteris-thal-continuity-bridge@0.2.0 demo
+> asteris-thal-continuity-bridge@0.3.0 demo
 > tsx src/demo/solaceProjectHeliosDemo.ts
 
 Asteris–THAL Continuity Bridge v0.1 Demo
@@ -222,17 +222,17 @@ Result: PASS
 Full Test Output
 
 
-> asteris-thal-continuity-bridge@0.2.0 test
-> vitest run
+> asteris-thal-continuity-bridge@0.3.0 test
+> node --no-warnings ./node_modules/vitest/vitest.mjs run
 
 
  RUN  v4.1.7 C:/Users/jmcdo/Dev/Asteris-THAL
 
 
- Test Files  1 passed (1)
-      Tests  5 passed (5)
-   Start at  19:52:16
-   Duration  198ms (transform 74ms, setup 0ms, import 95ms, tests 6ms, environment 0ms)
+ Test Files  5 passed (5)
+      Tests  10 passed (10)
+   Start at  20:57:38
+   Duration  285ms (transform 294ms, setup 0ms, import 395ms, tests 319ms, environment 0ms)
 
 
 ----------------------------------------

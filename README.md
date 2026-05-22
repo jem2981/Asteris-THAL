@@ -34,3 +34,18 @@ npm install
 npm test
 npm run demo
 ```
+
+## ATCB v0.3 Service
+
+ATCB v0.3 is a standalone local continuity-governance service. It is not THAL, Asteris, or Nova. It does not claim sentience, import private corpus material, transfer ownership, or fuse identities.
+
+ATCB is the continuity control plane around an AI system: it tracks memory integrity, claim provenance, confidence, contradictions, clarification-gated recovery, human review, state, and audit trails.
+
+```bash
+npm run db:migrate
+npm run db:seed
+npm run demo:v03
+npm run dashboard:v03
+```
+
+The local REST service binds to `127.0.0.1` by default. See `docs/INTEGRATION_CONTRACT.md` and `.env.example`.

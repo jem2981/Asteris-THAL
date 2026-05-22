@@ -33,6 +33,7 @@ function runNpm(args) {
       ...process.env,
       CI: "1",
       FORCE_COLOR: "0",
+      NODE_OPTIONS: "--no-warnings",
       NO_COLOR: "1"
     },
     shell: useShell
